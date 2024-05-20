@@ -1,6 +1,6 @@
 
 export default function Home() {
   return (
-    <p className="font-"></p>
+    <p className="font-semibold">Welcome</p>
   );
 }
