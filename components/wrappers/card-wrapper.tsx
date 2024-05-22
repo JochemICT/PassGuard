@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import { Header } from "@/components/ui/card-header";
 import Socials from "@/components/auth/Socials";
-import { BackButton } from "../back-button";
+import { BackButton } from "@/components/ui/back-button";
 
 interface CardWrapperProps {
     title: string;
