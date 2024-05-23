@@ -1,6 +1,12 @@
+import Navbar from "@/components/landing/Navbar";
+import Footer from "@/components/landing/Footer";
 
 export default function Home() {
   return (
-    <p className="font-semibold">Welcome</p>
+      <main className="relative overflow-hidden">
+        <Navbar />
+
+        <Footer />
+      </main>
   );
 }

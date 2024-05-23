@@ -15,3 +15,30 @@ export const sendVerificationEmail = async (
         html: `<p>Click <a href="${confirmLink}">here</a> to confirm your email.</p>`
     });
 }
+
+export const sendPasswordResetEmail = async (
+    email: string,
+    token: string,
+)=> {
+    const resetLink = process.env.PASSWORD_NEW_ENDPOINT + `?token=${token}`;
+
+    await resend.emails.send({
+        from: "PassGuard <onboarding@resend.dev>",
+        to: email,
+        subject: "Passguard - Reset Password",
+        html: `<p>Click <a href="${resetLink}">here</a> to reset your email.</p>`
+    });
+}
+
+
+export const sendTwoFactorTokenEmail = async (
+    email: string,
+    token: string
+) => {
+    await resend.emails.send({
+        from: "PassGuard <onboarding@resend.dev>",
+        to: email,
+        subject: "Passguard - 2FA Code",
+        html: `<p>Your 2FA code: ${token}</p>`
+    });
+}

@@ -4,6 +4,7 @@ import authConfig from "@/auth.config";
 import { db } from "@/lib/db"
 
 import {getUserById} from "@/data/user";
+import {getTwoFactorConfirmationByUserId} from "@/data/two-factor-confirmation";
 
 
 export const {
@@ -29,12 +30,21 @@ export const {
             //Allow OAuth withouth email verification
             if(account?.provider !== "credentials") return true; //If login with OAuth -> Allow
 
-            const existingUser = await getUserById(user.id);
+            const existingUser = await getUserById(<string>user.id);
 
             // Prevent signin withouth email verified
             if(!existingUser?.emailVerified) return false;
 
-            // TODO 2fa check
+            if(existingUser.isTwoFactorEnabled){
+                const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
+
+                if(!twoFactorConfirmation) return false;
+
+                await db.twoFactorConfirmation.delete({
+                    where: { id: twoFactorConfirmation.id}
+                });
+            }
+
             return true;
         },
         async session({token, session}){
