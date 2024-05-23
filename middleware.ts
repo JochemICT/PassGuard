@@ -1,12 +1,12 @@
 import authConfig from "@/auth.config";
 import NextAuth from "next-auth";
+import { NextResponse } from "next/server";
 
 import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from "@/routes";
 
-const { auth } = NextAuth(authConfig)
+const { auth } = NextAuth(authConfig);
 
-// @ts-ignore
-export default auth((req) => {
+export default auth(async (req) => {
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth;
 
@@ -14,24 +14,23 @@ export default auth((req) => {
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-    if(isApiAuthRoute){
-        return null;
+    if (isApiAuthRoute) {
+        return NextResponse.next();
     }
 
-    if(isAuthRoute){
-        if(isLoggedIn){
-            return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
+    if (isAuthRoute) {
+        if (isLoggedIn) {
+            return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl.origin));
         }
-        return null;
+        return NextResponse.next();
     }
 
-    if(!isLoggedIn && !isPublicRoute){
-        return Response.redirect(new URL("/login", nextUrl))
+    if (!isLoggedIn && !isPublicRoute) {
+        return NextResponse.redirect(new URL("/login", nextUrl.origin));
     }
 
-    return null;
-
-})
+    return NextResponse.next();
+});
 
 export const config = {
     matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
